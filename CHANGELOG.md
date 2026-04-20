@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.37.1] = 2026-04-20
+### Added
+- Add mqtt user and pass options
+
 ## [1.37.0] = 2026-01-06
 ### Added
 - #791: Add regexp to where expressions using '=~' (@TomDeVito)
