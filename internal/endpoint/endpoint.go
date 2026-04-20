@@ -103,6 +103,8 @@ type Endpoint struct {
 		CACertFile string
 		CertFile   string
 		KeyFile    string
+		User       string
+		Pass       string
 	}
 	PubSub struct {
 		Project  string
@@ -554,6 +556,10 @@ func parseEndpoint(s string) (Endpoint, error) {
 					endpoint.MQTT.CertFile = val[0]
 				case "key":
 					endpoint.MQTT.KeyFile = val[0]
+				case "user":
+					endpoint.MQTT.User = val[0]
+				case "pass":
+					endpoint.MQTT.Pass = val[0]
 				}
 			}
 		}

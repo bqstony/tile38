@@ -101,8 +101,15 @@ func (conn *MQTTConn) Send(msg string) error {
 			return err
 		}
 		uuid := fmt.Sprintf("tile38-%x-%x-%x-%x-%x", b[0:4], b[4:6], b[6:8], b[8:10], b[10:])
-
 		ops = ops.SetClientID(uuid).AddBroker(uri)
+
+		if conn.ep.MQTT.User != "" {
+			ops = ops.SetUsername(conn.ep.MQTT.User)
+		}
+		if conn.ep.MQTT.Pass != "" {
+			ops = ops.SetPassword(conn.ep.MQTT.Pass)
+		}
+
 		c := paho.NewClient(ops)
 
 		if token := c.Connect(); token.Wait() && token.Error() != nil {
