@@ -68,7 +68,12 @@ func (conn *MQTTConn) Send(msg string) error {
 	conn.t = time.Now()
 
 	if conn.conn == nil {
-		uri := fmt.Sprintf("tcp://%s:%d", conn.ep.MQTT.Host, conn.ep.MQTT.Port)
+		prefix := "tcp://"
+		if conn.ep.MQTT.SSL {
+			prefix = "ssl://"
+		}
+
+		uri := fmt.Sprintf("%s%s:%d", prefix, conn.ep.MQTT.Host, conn.ep.MQTT.Port)
 		ops := paho.NewClientOptions()
 		if conn.ep.MQTT.CertFile != "" || conn.ep.MQTT.KeyFile != "" ||
 			conn.ep.MQTT.CACertFile != "" {
@@ -113,6 +118,7 @@ func (conn *MQTTConn) Send(msg string) error {
 		c := paho.NewClient(ops)
 
 		if token := c.Connect(); token.Wait() && token.Error() != nil {
+			log.Debugf("Failed to connect mqtt with error: %v", token.Error())
 			return token.Error()
 		}
 
@@ -123,6 +129,7 @@ func (conn *MQTTConn) Send(msg string) error {
 		conn.ep.MQTT.Retained, msg)
 
 	if !t.WaitTimeout(mqttPublishTimeout) || t.Error() != nil {
+		log.Debugf("Failed to publish mqtt message with error: %v", t.Error())
 		conn.close()
 		return t.Error()
 	}
